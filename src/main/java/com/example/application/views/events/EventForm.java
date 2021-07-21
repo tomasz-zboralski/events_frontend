@@ -61,7 +61,7 @@ public class EventForm extends FormLayout {
             setVisible(false);
         } else {
             setVisible(true);
-            description.focus();
+            name.focus();
         }
     }
 
