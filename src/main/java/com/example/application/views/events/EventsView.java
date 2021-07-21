@@ -13,8 +13,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.router.RouteAlias;
+import org.springframework.stereotype.Component;
 
-
+@Component
 @PageTitle("Events")
 @Route(value = "events", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
@@ -22,6 +23,7 @@ public class EventsView extends Div implements AfterNavigationObserver {
 
     private final EventService eventService;
     Grid<EventDto> grid = new Grid<>(EventDto.class);
+    private EventForm form = new EventForm(this);
 
     public EventsView(EventService eventService) {
         this.eventService = eventService;
@@ -30,7 +32,7 @@ public class EventsView extends Div implements AfterNavigationObserver {
         setSizeFull();
         grid.setHeight("100%");
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS);
-        HorizontalLayout mainContent = new HorizontalLayout(grid);
+        HorizontalLayout mainContent = new HorizontalLayout(grid, form);
         mainContent.setSizeFull();
         add(mainContent);
     }
@@ -38,6 +40,11 @@ public class EventsView extends Div implements AfterNavigationObserver {
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
 
+        grid.setItems(eventService.getEvents());
+
+    }
+
+    public void refresh() {
         grid.setItems(eventService.getEvents());
     }
 
