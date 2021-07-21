@@ -23,10 +23,12 @@ public class EventsView extends Div implements AfterNavigationObserver {
 
     private final EventService eventService;
     Grid<EventDto> grid = new Grid<>(EventDto.class);
-    private EventForm form = new EventForm(this);
+    private EventForm form;
 
     public EventsView(EventService eventService) {
+
         this.eventService = eventService;
+        form = new EventForm(this, eventService);
         grid.setColumns("name", "description");
         addClassName("events-view");
         setSizeFull();
@@ -35,6 +37,8 @@ public class EventsView extends Div implements AfterNavigationObserver {
         HorizontalLayout mainContent = new HorizontalLayout(grid, form);
         mainContent.setSizeFull();
         add(mainContent);
+        form.setEvent(null);
+        grid.asSingleSelect().addValueChangeListener(event -> form.setEvent(grid.asSingleSelect().getValue()));
     }
 
     @Override

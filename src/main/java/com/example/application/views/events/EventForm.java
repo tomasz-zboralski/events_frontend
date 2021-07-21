@@ -17,7 +17,7 @@ public class EventForm extends FormLayout {
 
     private Binder<EventDto> binder = new Binder<EventDto>(EventDto.class);
     private EventsView eventsView;
-    @Autowired
+    //@Autowired
     private EventService eventService;
 
     private TextField name = new TextField("Name");
@@ -25,9 +25,9 @@ public class EventForm extends FormLayout {
     private Button save = new Button("Save");
     private Button delete = new Button("Delete");
 
-    public EventForm(EventsView eventsView) {
+    public EventForm(EventsView eventsView, EventService eventService) {
         this.eventsView = eventsView;
-        //this.eventService = eventService;
+        this.eventService = eventService;
         HorizontalLayout buttons = new HorizontalLayout(save, delete);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         description.getStyle().set("maxHeight", "150px");
@@ -54,7 +54,7 @@ public class EventForm extends FormLayout {
         setEvent(null);
     }
 
-    private void setEvent(EventDto eventDto) {
+    public void setEvent(EventDto eventDto) {
         binder.setBean(eventDto);
 
         if (eventDto == null) {
