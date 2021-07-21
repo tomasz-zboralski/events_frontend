@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.example.application.domain.UserDto;
+import com.example.application.service.UserService;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
@@ -22,9 +23,11 @@ import com.example.application.views.MainLayout;
 @Route(value = "users", layout = MainLayout.class)
 public class UsersView extends Div implements AfterNavigationObserver {
 
+    private final UserService userService;
     Grid<UserDto> grid = new Grid<>();
 
-    public UsersView() {
+    public UsersView(UserService userService) {
+        this.userService = userService;
         addClassName("users-view");
         setSizeFull();
         grid.setHeight("100%");
@@ -77,19 +80,19 @@ public class UsersView extends Div implements AfterNavigationObserver {
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
 
-        List<UserDto> users = Arrays.asList( //
-                createUser(1L, "John Smith", 2),
-                createUser(2L, "Mark Morgan", 4)
+//        List<UserDto> users = Arrays.asList( //
+//                createUser(1L, "John Smith", 2),
+//                createUser(2L, "Mark Morgan", 4)
+//
+//        );
 
-        );
-
-        grid.setItems(users);
+        grid.setItems(userService.getUsers());
     }
 
-    private static UserDto createUser(Long id, String name, int events) {
-        UserDto user = new UserDto(id, name, events);
-
-        return user;
-    }
+//    private static UserDto createUser(Long id, String name, int events) {
+//        UserDto user = new UserDto(id, name, events);
+//
+//        return user;
+//    }
 
 }
