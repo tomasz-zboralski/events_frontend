@@ -17,7 +17,6 @@ public class EventForm extends FormLayout {
 
     private Binder<EventDto> binder = new Binder<EventDto>(EventDto.class);
     private EventsView eventsView;
-    //@Autowired
     private EventService eventService;
 
     private TextField name = new TextField("Name");

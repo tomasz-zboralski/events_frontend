@@ -1,10 +1,9 @@
 package com.example.application.views.users;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.example.application.domain.EventDto;
 import com.example.application.domain.UserDto;
 import com.example.application.service.UserService;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
@@ -18,22 +17,42 @@ import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 import com.example.application.views.MainLayout;
+import org.springframework.stereotype.Component;
 
+@Component
 @PageTitle("Users")
 @Route(value = "users", layout = MainLayout.class)
 public class UsersView extends Div implements AfterNavigationObserver {
 
     private final UserService userService;
+    private final UserForm form;
+
     Grid<UserDto> grid = new Grid<>();
+    private Button addNewUser = new Button("Add new user");
 
     public UsersView(UserService userService) {
+
         this.userService = userService;
+        form = new UserForm(this, userService);
+        form.setUser(null);
+
         addClassName("users-view");
         setSizeFull();
         grid.setHeight("100%");
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS);
-        grid.addComponentColumn(user -> createCard(user));
-        add(grid);
+        grid.addComponentColumn(this::createCard);
+        HorizontalLayout toolbar = new HorizontalLayout(addNewUser);
+        HorizontalLayout mainContent = new HorizontalLayout(grid, form);
+        mainContent.setSizeFull();
+        add(toolbar, mainContent);
+
+        //grid.asSingleSelect().addValueChangeListener(event -> form.setUser(grid.asSingleSelect().getValue()));
+        grid.addItemClickListener(event -> form.setUser(grid.asSingleSelect().getValue()));
+
+        addNewUser.addClickListener(e -> {
+            grid.asSingleSelect().clear();
+            form.setUser(new UserDto());
+        });
     }
 
     private HorizontalLayout createCard(UserDto userDto) {
@@ -79,20 +98,12 @@ public class UsersView extends Div implements AfterNavigationObserver {
 
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
-
-//        List<UserDto> users = Arrays.asList( //
-//                createUser(1L, "John Smith", 2),
-//                createUser(2L, "Mark Morgan", 4)
-//
-//        );
-
         grid.setItems(userService.getUsers());
     }
 
-//    private static UserDto createUser(Long id, String name, int events) {
-//        UserDto user = new UserDto(id, name, events);
-//
-//        return user;
-//    }
+    public void refresh() {
+        grid.setItems(userService.getUsers());
+    }
+
 
 }
