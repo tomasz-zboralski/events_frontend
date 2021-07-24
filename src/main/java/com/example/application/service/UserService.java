@@ -19,6 +19,10 @@ public class UserService {
         return userClient.findAll();
     }
 
+    public UserDto getUserById(Long id) {
+        return userClient.getUserById(id);
+    }
+
     public void addUser(UserDto userDto) {
         userClient.create(userDto);
     }

@@ -2,6 +2,7 @@ package com.example.application.client;
 
 import com.example.application.domain.EventDto;
 import com.example.application.domain.UserDto;
+import com.vaadin.flow.router.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -50,6 +51,14 @@ public class UserClient {
         URI url = getUri();
 
         return getUsersDto(url);
+    }
+
+    public UserDto getUserById(long id) {
+        URI url = UriComponentsBuilder.fromHttpUrl(BACKEND + "/" + id)
+                .build().encode().toUri();
+        UserDto response = restTemplate.getForObject(url, UserDto.class);
+        return Optional.ofNullable(response).orElseThrow(NotFoundException::new);
+
     }
 
     private Set<UserDto> getUsersDto(URI url) {

@@ -1,6 +1,7 @@
 package com.example.application.client;
 
 import com.example.application.domain.EventDto;
+import com.example.application.domain.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -50,6 +51,14 @@ public class EventsClient {
         URI url = getUri();
 
         return getEventsDto(url);
+    }
+
+    public void addParticipant(EventDto eventDto, UserDto userDto) {
+        URI url = UriComponentsBuilder.fromHttpUrl(BACKEND + "/" + eventDto.getEventId() + "/" + userDto.getUserId())
+                .build().encode().toUri();
+
+
+        restTemplate.put(url, eventDto);
     }
 
     private Set<EventDto> getEventsDto(URI url) {

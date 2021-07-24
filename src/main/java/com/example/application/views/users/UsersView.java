@@ -2,6 +2,7 @@ package com.example.application.views.users;
 
 import com.example.application.domain.EventDto;
 import com.example.application.domain.UserDto;
+import com.example.application.service.EventService;
 import com.example.application.service.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -17,24 +18,30 @@ import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 import com.example.application.views.MainLayout;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
+@SpringComponent
+@UIScope
 @PageTitle("Users")
 @Route(value = "users", layout = MainLayout.class)
 public class UsersView extends Div implements AfterNavigationObserver {
 
     private final UserService userService;
+    private final EventService eventService;
     private final UserForm form;
 
     Grid<UserDto> grid = new Grid<>();
     private Button addNewUser = new Button("Add new user");
 
-    public UsersView(UserService userService) {
+    public UsersView(UserService userService, EventService eventService) {
 
         this.userService = userService;
-        form = new UserForm(this, userService);
-        form.setUser(null);
+        this.eventService = eventService;
+        form = new UserForm(this, userService, eventService);
+
 
         addClassName("users-view");
         setSizeFull();
@@ -46,6 +53,7 @@ public class UsersView extends Div implements AfterNavigationObserver {
         mainContent.setSizeFull();
         add(toolbar, mainContent);
 
+        form.setUser(null);
         //grid.asSingleSelect().addValueChangeListener(event -> form.setUser(grid.asSingleSelect().getValue()));
         grid.addItemClickListener(event -> form.setUser(grid.asSingleSelect().getValue()));
 
@@ -84,9 +92,9 @@ public class UsersView extends Div implements AfterNavigationObserver {
         actions.setSpacing(false);
         actions.getThemeList().add("spacing-s");
 
-        Icon likeIcon = VaadinIcon.HEART.create();
+        Icon likeIcon = VaadinIcon.EYE.create();
         likeIcon.addClassName("icon");
-        Span eventsNumber = new Span(String.valueOf(userDto.getEventsParticipation()));
+        Span eventsNumber = new Span("100");
         eventsNumber.addClassName("events");
 
         actions.add(likeIcon, eventsNumber);
