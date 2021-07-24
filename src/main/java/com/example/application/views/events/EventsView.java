@@ -90,9 +90,9 @@ public class EventsView extends Div implements AfterNavigationObserver {
         card.setSpacing(false);
         card.getThemeList().add("spacing-s");
 
-        Icon image = VaadinIcon.CHECK_CIRCLE_O.create();
-        image.setSize("100px");
-        image.addClassName("image");
+//        Icon image = VaadinIcon.CHECK_CIRCLE_O.create();
+//        image.setSize("100px");
+//        image.addClassName("image");
 
         VerticalLayout description = new VerticalLayout();
         description.addClassName("description");
@@ -110,7 +110,7 @@ public class EventsView extends Div implements AfterNavigationObserver {
 
         Span name = new Span(eventDto.getName());
         name.addClassName("name");
-        name.getElement().getStyle().set("font-size", "25px");
+        name.getElement().getStyle().set("font-size", "40px");
         header.add(name);
 
         Span eventDescription = new Span(eventDto.getDescription());
@@ -145,7 +145,7 @@ public class EventsView extends Div implements AfterNavigationObserver {
         Span time = new Span("Time unknown");
         if (eventDto.getStartTime() != null ) {
             LocalDateTime dateTime = eventDto.getStartTime();
-            ZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, ZoneId.of("Europe/Helsinki"));
+            ZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, ZoneId.of("Europe/Warsaw"));
             time = new Span(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
                     .format(zonedDateTime));
         }
@@ -153,15 +153,15 @@ public class EventsView extends Div implements AfterNavigationObserver {
         time.addClassName("time");
 
         Span place = new Span("Place unknown");
-        if (eventDto.getPlace() != null ) place = new Span(eventDto.getPlace());
+        if (eventDto.getPlace() != null ) place = new Span(eventDto.getPlace()+", ");
         place.addClassName("place");
 
-        info.add(type, time, place);
+        info.add(place, time);
 
 
 
-        description.add(info, header, eventDescription, actions);
-        card.add(image, description);
+        description.add(type, info, header, eventDescription, actions);
+        card.add(description);
         return card;
     }
 
