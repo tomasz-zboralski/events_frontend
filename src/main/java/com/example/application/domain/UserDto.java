@@ -17,4 +17,8 @@ public class UserDto {
     private Long userId;
     @JsonProperty(value = "name")
     private String name;
+    @JsonProperty(value = "email")
+    private String email;
+    @JsonProperty(value = "participation")
+    private int participation;
 }

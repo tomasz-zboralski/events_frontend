@@ -25,6 +25,12 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+
 //@Component
 @SpringComponent
 @UIScope
@@ -98,6 +104,10 @@ public class EventsView extends Div implements AfterNavigationObserver {
         header.setSpacing(false);
         header.getThemeList().add("spacing-s");
 
+        Span type = new Span(String.valueOf(eventDto.getEventType()));
+        type.addClassName("type");
+        //header.add(type);
+
         Span name = new Span(eventDto.getName());
         name.addClassName("name");
         name.getElement().getStyle().set("font-size", "25px");
@@ -105,7 +115,7 @@ public class EventsView extends Div implements AfterNavigationObserver {
 
         Span eventDescription = new Span(eventDto.getDescription());
         eventDescription.addClassName("eventdescription");
-        eventDescription.setHeight("150px");
+        eventDescription.setHeight("100px");
 
         HorizontalLayout actions = new HorizontalLayout();
         actions.addClassName("actions");
@@ -127,7 +137,30 @@ public class EventsView extends Div implements AfterNavigationObserver {
 
         actions.add(likeIcon, eventsNumber, addMeButton);
 
-        description.add(header, eventDescription, actions);
+        HorizontalLayout info = new HorizontalLayout();
+        info.addClassName("info");
+        info.setSpacing(false);
+        info.getThemeList().add("spacing-s");
+
+        Span time = new Span("Time unknown");
+        if (eventDto.getStartTime() != null ) {
+            LocalDateTime dateTime = eventDto.getStartTime();
+            ZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, ZoneId.of("Europe/Helsinki"));
+            time = new Span(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                    .format(zonedDateTime));
+        }
+
+        time.addClassName("time");
+
+        Span place = new Span("Place unknown");
+        if (eventDto.getPlace() != null ) place = new Span(eventDto.getPlace());
+        place.addClassName("place");
+
+        info.add(type, time, place);
+
+
+
+        description.add(info, header, eventDescription, actions);
         card.add(image, description);
         return card;
     }
@@ -145,7 +178,7 @@ public class EventsView extends Div implements AfterNavigationObserver {
 
     private Button createAddMeButton(Grid<EventDto> grid, EventDto item) {
         @SuppressWarnings("unchecked")
-        Button button = new Button("Add me as a participant", clickEvent -> {
+        Button button = new Button("Add me", clickEvent -> {
             ListDataProvider<EventDto> dataProvider = (ListDataProvider<EventDto>) grid
                     .getDataProvider();
             dataProvider.getItems().stream().filter(i -> i.equals(item)).findFirst().get().getUsers().add(userService.getUserById(1L));

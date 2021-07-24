@@ -1,10 +1,13 @@
 package com.example.application.views.events;
 
 import com.example.application.domain.EventDto;
+import com.example.application.domain.EventType;
 import com.example.application.domain.UserDto;
 import com.example.application.service.EventService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -16,6 +19,9 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
+import java.time.Duration;
+import java.util.ArrayList;
+
 //@Component
 @SpringComponent
 @UIScope
@@ -26,15 +32,22 @@ public class EventForm extends Div {
     private EventService eventService;
     private Grid<UserDto> users = new Grid<>(UserDto.class);
 
+    private ComboBox<EventType> eventType = new ComboBox<>();
+    private DateTimePicker startTime = new DateTimePicker("Start time");
+    private TextField place = new TextField("Place");
     private TextField name = new TextField("Name");
-    TextArea description = new TextArea("Description");
+    private TextArea description = new TextArea("Description");
     private Button save = new Button("Save");
     private Button delete = new Button("Delete");
 
     public EventForm(EventsView eventsView, EventService eventService) {
 
         this.eventService = eventService;
-        VerticalLayout content = new VerticalLayout(name, description);
+
+        eventType.setItems(EventType.MUSIC, EventType.EDUCATION, EventType.SPORT);
+        startTime.setStep(Duration.ofMinutes(30));
+
+        VerticalLayout content = new VerticalLayout(eventType, startTime, place, name, description);
         HorizontalLayout buttons = new HorizontalLayout(save, delete);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         name.setWidthFull();
@@ -50,7 +63,7 @@ public class EventForm extends Div {
 
 
 
-        add(content, users, buttons);
+        add(buttons, content, users);
 
         binder.bindInstanceFields(this);
         this.eventsView = eventsView;
@@ -81,7 +94,12 @@ public class EventForm extends Div {
         } else {
             setVisible(true);
             name.focus();
-            users.setItems(eventDto.getUsers());
+            if (eventDto.getUsers() != null) {
+                users.setItems(eventDto.getUsers());
+            } else {
+                users.setItems(new ArrayList<>());
+            }
+
         }
     }
 

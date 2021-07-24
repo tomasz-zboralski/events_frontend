@@ -94,7 +94,7 @@ public class UsersView extends Div implements AfterNavigationObserver {
 
         Icon likeIcon = VaadinIcon.EYE.create();
         likeIcon.addClassName("icon");
-        Span eventsNumber = new Span("100");
+        Span eventsNumber = new Span(String.valueOf(userDto.getParticipation()));
         eventsNumber.addClassName("events");
 
         actions.add(likeIcon, eventsNumber);

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Component
@@ -13,6 +14,12 @@ import java.util.Set;
 public class EventDto {
     @JsonProperty(value = "eventId")
     private Long eventId;
+    @JsonProperty(value = "eventType")
+    private EventType eventType;
+    @JsonProperty(value = "startTime")
+    private LocalDateTime startTime;
+    @JsonProperty(value = "place")
+    private String place;
     @JsonProperty(value = "name")
     private String name;
     @JsonProperty(value = "description")
