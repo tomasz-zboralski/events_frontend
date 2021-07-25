@@ -11,7 +11,7 @@ import java.util.Set;
 @Component
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EventDto {
+public class EventDto implements Comparable<EventDto>{
     @JsonProperty(value = "eventId")
     private Long eventId;
     @JsonProperty(value = "eventType")
@@ -30,5 +30,10 @@ public class EventDto {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int compareTo(EventDto o) {
+        return this.getStartTime().compareTo(o.getStartTime());
     }
 }

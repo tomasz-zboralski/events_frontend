@@ -6,6 +6,7 @@ import com.example.application.service.EventService;
 import com.example.application.service.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -15,6 +16,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.provider.SortDirection;
+import com.vaadin.flow.data.provider.SortOrder;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.Route;
@@ -30,6 +33,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 //@Component
 @SpringComponent
@@ -61,6 +68,8 @@ public class EventsView extends Div implements AfterNavigationObserver {
 //        grid.addComponentColumn(i -> createCard(i));
 
         grid.addComponentColumn(this::createCard);
+
+
         HorizontalLayout toolbar = new HorizontalLayout(addNewEvent);
         //form.setHeight("60%");
         HorizontalLayout mainContent = new HorizontalLayout(grid, form);
@@ -173,7 +182,10 @@ public class EventsView extends Div implements AfterNavigationObserver {
     }
 
     public void refresh() {
-        grid.setItems(eventService.getEvents());
+        List<EventDto> events = new ArrayList<>(eventService.getEvents());
+        Collections.sort(events);
+
+        grid.setItems(events);
     }
 
     private Button createAddMeButton(Grid<EventDto> grid, EventDto item) {
